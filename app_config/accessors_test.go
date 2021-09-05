@@ -16,7 +16,9 @@ limitations under the License.
 
 package AppConfig
 
-import "testing"
+import (
+	"testing"
+)
 
 func TestGet(t *testing.T) {
 	err := LoadEncrypted("../config/secrets.yml.enc", "../config/master.key")
@@ -63,5 +65,19 @@ func TestExists(t *testing.T) {
 
 	if got != false {
 		t.Errorf("Expected key 'secret' to not exists but it did")
+	}
+}
+
+func TestAllKeys(t *testing.T) {
+	err := LoadEncrypted("../config/secrets.yml.enc", "../config/master.key")
+
+	if err != nil {
+		t.Errorf("Unexpected error when loading encrypted secrets %#v", err)
+	}
+
+	for _, s := range AllKeys() {
+		if !Exists(s) {
+			t.Errorf("Expected key %s to exist but it didn't", s)
+		}
 	}
 }

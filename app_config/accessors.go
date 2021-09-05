@@ -32,7 +32,7 @@ func Get(keys string) (value interface{}, err error) {
 	for i, key := range keysSlice {
 		var ok bool
 		if i != len(keysSlice) - 1 {
-			nestedConfig, ok = nestedConfig[key].(map[string]interface{})
+			nestedConfig, ok = nestedConfig[key].(Config)
 		} else {
 			value, ok = nestedConfig[key]
 		}
@@ -68,4 +68,30 @@ func Exists(keys string) bool {
 		return false
 	}
 	return true
+}
+
+func AllKeys() []string {
+	return keysInConfig(config[ENV].(Config), "")
+}
+
+func keysInConfig(c Config, prefix string) []string {
+	keys := make([]string, 0)
+	for key, value := range c {
+		nestedConfig, ok := value.(Config)
+
+		var newPrefix string
+		if prefix == "" {
+			newPrefix = key
+		} else {
+			newPrefix = fmt.Sprintf("%s.%s", prefix, key)
+		}
+
+		if !ok {
+			keys = append(keys, newPrefix)
+		} else {
+			keys = append(keys, keysInConfig(nestedConfig, newPrefix)...)
+		}
+	}
+
+	return keys
 }

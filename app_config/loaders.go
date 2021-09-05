@@ -24,8 +24,10 @@ import (
 	"path/filepath"
 )
 
+type Config = map[string]interface{}
+
 var (
-	config = map[string]interface{}{}
+	config = Config{}
 	ENV = env("GO_ENV", "development")
 )
 
@@ -66,7 +68,7 @@ func Load(files ...string) (err error) {
 	return
 }
 
-func loadYaml(yamlBytes []byte, target *map[string]interface{}) (err error) {
+func loadYaml(yamlBytes []byte, target *Config) (err error) {
 	return yaml.Unmarshal(yamlBytes, target)
 }
 
@@ -81,7 +83,7 @@ func loadFile(relativePath string) (contents []byte, err error) {
 }
 
 func mergeConfig(bytes []byte) (err error) {
-	newConfig := map[string]interface{}{}
+	newConfig := Config{}
 
 	err = loadYaml(bytes, &newConfig)
 
