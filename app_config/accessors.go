@@ -71,7 +71,7 @@ func Exists(keys string) bool {
 }
 
 func GetConfig() Config {
-	return config
+	return config[ENV].(Config)
 }
 
 func AllKeys() []string {
