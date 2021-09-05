@@ -73,7 +73,7 @@ func init() {
     if err != nil {
         panic(err)
     }
-    // Load other YAMsL files into AppConfig
+    // Load other YAML files into AppConfig
     // This is useful to keep all your configuration values in one place, this will not override other values if the keys already exist
     err = AppConfig.Load("./config/env.yml")
     if err != nil {
