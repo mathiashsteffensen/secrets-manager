@@ -30,6 +30,14 @@ func Get(keys string) (value interface{}, err error) {
 	return
 }
 
+func GetOrDefault(keys string, defaultValue interface{}) interface{} {
+	value, err := Get(keys)
+	if err != nil {
+		return defaultValue
+	}
+	return value
+}
+
 func MustGet(keys string) (value interface{}) {
 	value, err := Get(keys)
 	if err != nil {
