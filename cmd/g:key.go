@@ -18,13 +18,11 @@ package cmd
 
 import (
 	"fmt"
+	"github.com/spf13/cobra"
 	"io/ioutil"
 	"math/rand"
 	"path/filepath"
 	"strconv"
-	"time"
-
-	"github.com/spf13/cobra"
 )
 
 // g:keyCmd represents the g:key command
@@ -45,8 +43,6 @@ func init() {
 	rootCmd.AddCommand(gKeyCmd)
 
 	gKeyCmd.Flags().StringVarP(&keyFile, "key-file", "k", "./config/master.key", "Encryption key file location")
-
-	rand.Seed(time.Now().UnixNano())
 }
 
 func runGKeyCmd(cmd *cobra.Command, args []string)  {

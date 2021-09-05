@@ -4,11 +4,19 @@ import (
 	"crypto/aes"
 	"crypto/cipher"
 	"crypto/rand"
+	"encoding/binary"
 	"fmt"
+	"github.com/lucsky/cuid"
 	"io"
 	"io/ioutil"
+	mathRand "math/rand"
 	"path/filepath"
 )
+
+func init() {
+	seed := binary.BigEndian.Uint64([]byte(cuid.New()))
+	mathRand.Seed(int64(seed))
+}
 
 func DecryptSecrets(secrets []byte, key []byte) (decrypted []byte, err error) {
 	gcm, err := NewGCM(key)
@@ -67,4 +75,12 @@ func NewEncryptor(key []byte) Encryptor {
 
 		return
 	}
+}
+
+func GenRandomBytes(byteLength int) (randomBytes []byte, err error) {
+	randomBytes = make([]byte, byteLength)
+
+	_, err = rand.Read(randomBytes)
+
+	return
 }
