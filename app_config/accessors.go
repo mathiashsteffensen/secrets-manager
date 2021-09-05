@@ -37,3 +37,11 @@ func MustGet(keys string) (value interface{}) {
 	}
 	return
 }
+
+func Exists(keys string) bool {
+	_, err := Get(keys)
+	if err != nil {
+		return false
+	}
+	return true
+}
