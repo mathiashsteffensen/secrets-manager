@@ -70,6 +70,10 @@ func Exists(keys string) bool {
 	return true
 }
 
+func GetConfig() Config {
+	return config
+}
+
 func AllKeys() []string {
 	return keysInConfig(config[ENV].(Config), "")
 }

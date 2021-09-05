@@ -49,17 +49,17 @@ Description | Flag | Default value | Example
 Byte length to use for encryption key, must be one of [16, 24, 32] | none (positional) | 32 | `secrets-manager g:key 24`
 Key file to use for encryption and decryption | -k, --key-file | ./config/master.key | `secrets-manager g:key 24 -k .config/secret.key`
 
-### secrets-manager load-env
-This command loads encrypted and unencrypted configuration files into your environment by capitalizing keys and replacing "." with "_"
-for example what could have been retrieved using AppConfig.Get("postgres.user") is now available in whatever executable as en env variable POSTGRES_USER
+### secrets-manager print
+This command loads encrypted and unencrypted configuration files and prints them in JSON format to STDOUT.
+Useful for scripting and easy parsing.
 
 Options and default values:
 
 Description | Flag | Default value | Example
 --- | --- | --- | ---
-Command to run with environment set | none (positional) | No default, required argument | `secrets-manager load-env go run main.go`
-Secrets file to save encrypted contents too | -s, --secrets-file | ./config/secrets.yml.enc | `secrets-manager load-env -s .config/credentials.yml.enc go run main.go`
-Key file to use for encryption and decryption | -k, --key-file | ./config/master.key | `secrets-manager load-env -k .config/secret.key go run main.go`
+Secrets file to save encrypted contents too | -s, --secrets-file | ./config/secrets.yml.enc | `secrets-manager print -s .config/credentials.yml.enc`
+Key file to use for encryption and decryption | -k, --key-file | ./config/master.key | `secrets-manager print -k .config/secret.key`
+Other unencrypted environment files | -f, --env-files | [./config/env.yml] | `secrets-manager print -f [./config/env.production.yml, ./config/env.development.yml]`
 
 ## The Go API
 
