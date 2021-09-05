@@ -1,3 +1,19 @@
+/*
+Copyright © 2021 Mathias H Steffensen mathiashsteffensen@protonmail.com
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+*/
+
 package AppConfig
 
 import (
@@ -16,7 +32,7 @@ func Get(keys string) (value interface{}, err error) {
 	for i, key := range keysSlice {
 		var ok bool
 		if i != len(keysSlice) - 1 {
-			nestedConfig, ok = nestedConfig[key].(map[string]interface{})
+			nestedConfig, ok = nestedConfig[key].(Config)
 		} else {
 			value, ok = nestedConfig[key]
 		}
@@ -52,4 +68,30 @@ func Exists(keys string) bool {
 		return false
 	}
 	return true
+}
+
+func AllKeys() []string {
+	return keysInConfig(config[ENV].(Config), "")
+}
+
+func keysInConfig(c Config, prefix string) []string {
+	keys := make([]string, 0)
+	for key, value := range c {
+		nestedConfig, ok := value.(Config)
+
+		var newPrefix string
+		if prefix == "" {
+			newPrefix = key
+		} else {
+			newPrefix = fmt.Sprintf("%s.%s", prefix, key)
+		}
+
+		if !ok {
+			keys = append(keys, newPrefix)
+		} else {
+			keys = append(keys, keysInConfig(nestedConfig, newPrefix)...)
+		}
+	}
+
+	return keys
 }
