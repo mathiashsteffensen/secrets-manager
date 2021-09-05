@@ -46,7 +46,7 @@ Options and default values:
 
 Description | Flag | Default value | Example
 --- | --- | --- | ---
-Byte length to use for encryption key, must be one of [16, 24, 32] | none (positional) | ./config/secrets.yml.enc | `secrets-manager g:key 24`
+Byte length to use for encryption key, must be one of [16, 24, 32] | none (positional) | 32 | `secrets-manager g:key 24`
 Key file to use for encryption and decryption | -k, --key-file | ./config/master.key | `secrets-manager g:key 24 -k .config/secret.key`
 
 ## The Go API
