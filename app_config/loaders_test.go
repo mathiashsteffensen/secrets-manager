@@ -96,7 +96,7 @@ func TestLoad(t *testing.T) {
 	}
 }
 
-func TestLoadFile(t *testing.T)  {
+func TestLoadFile(t *testing.T) {
 	contents, err := loadFile("../config/env.yml")
 
 	if err != nil {

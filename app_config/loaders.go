@@ -28,9 +28,8 @@ type Config = map[string]interface{}
 
 var (
 	config = Config{}
-	ENV = env("GO_ENV", "development")
+	ENV    = env("GO_ENV", "development")
 )
-
 
 func LoadEncrypted(secretsLocation string, keyLocation string) (err error) {
 	secrets, err := loadFile(secretsLocation)
@@ -50,7 +49,7 @@ func LoadEncrypted(secretsLocation string, keyLocation string) (err error) {
 
 	err = mergeConfig(decrypted)
 
-	return nil
+	return
 }
 
 func Load(files ...string) (err error) {

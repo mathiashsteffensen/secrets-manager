@@ -45,7 +45,7 @@ func init() {
 	gKeyCmd.Flags().StringVarP(&keyFile, "key-file", "k", "./config/master.key", "Encryption key file location")
 }
 
-func runGKeyCmd(cmd *cobra.Command, args []string)  {
+func runGKeyCmd(cmd *cobra.Command, args []string) {
 	var byteLength string
 
 	if len(args) != 0 {

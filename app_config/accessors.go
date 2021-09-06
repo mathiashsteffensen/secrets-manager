@@ -17,7 +17,6 @@ limitations under the License.
 package AppConfig
 
 import (
-	"errors"
 	"fmt"
 	"strings"
 )
@@ -31,14 +30,14 @@ func Get(keys string) (value interface{}, err error) {
 
 	for i, key := range keysSlice {
 		var ok bool
-		if i != len(keysSlice) - 1 {
+		if i != len(keysSlice)-1 {
 			nestedConfig, ok = nestedConfig[key].(Config)
 		} else {
 			value, ok = nestedConfig[key]
 		}
 
 		if !ok {
-			err = errors.New(fmt.Sprintf("key not found, key: %s", keys))
+			err = fmt.Errorf("key not found, key: %s", keys)
 			return
 		}
 	}
@@ -64,10 +63,7 @@ func MustGet(keys string) (value interface{}) {
 
 func Exists(keys string) bool {
 	_, err := Get(keys)
-	if err != nil {
-		return false
-	}
-	return true
+	return err == nil
 }
 
 func GetConfig() Config {

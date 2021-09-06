@@ -26,7 +26,7 @@ import (
 var (
 	// printCmd represents the loadEnv command
 	printCmd = &cobra.Command{
-		Use:   "print",
+		Use: "print",
 		Long: `
   Prints all config values formatted as json
 

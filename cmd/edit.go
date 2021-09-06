@@ -31,15 +31,15 @@ import (
 
 var (
 	secretsFile string
-	keyFile string
+	keyFile     string
 )
 
 // editCmd represents the edit command
 var editCmd = &cobra.Command{
 	Use:   "edit",
 	Short: "Edit your application secrets file",
-	Long: editDescription,
-	Run: runEditCmd,
+	Long:  editDescription,
+	Run:   runEditCmd,
 }
 
 func init() {
@@ -55,7 +55,7 @@ func runEditCmd(cmd *cobra.Command, args []string) {
 	secrets := readEncryptedSecrets()
 
 	if secrets != nil {
-		decryptedSecrets, err  := crypto.DecryptSecrets(secrets, key)
+		decryptedSecrets, err := crypto.DecryptSecrets(secrets, key)
 		cobra.CheckErr(err)
 		secrets = decryptedSecrets
 	}
@@ -120,7 +120,7 @@ func createTempFile(content []byte, dir string) string {
 	return tmp
 }
 
-func openTempFile(location string, handleSaveFile crypto.Encryptor)  {
+func openTempFile(location string, handleSaveFile crypto.Encryptor) {
 	editor := env("EDITOR", "subl -w")
 	editorSlice := strings.Split(editor, " ")
 

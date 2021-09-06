@@ -36,6 +36,9 @@ func init() {
 
 func DecryptSecrets(secrets []byte, key []byte) (decrypted []byte, err error) {
 	gcm, err := NewGCM(key)
+	if err != nil {
+		return nil, err
+	}
 
 	nonce := secrets[:gcm.NonceSize()]
 	decrypted, err = gcm.Open(nil, nonce, secrets[gcm.NonceSize():], nil)
@@ -75,7 +78,7 @@ func NewEncryptor(key []byte) Encryptor {
 			return
 		}
 
-		encrypted :=gcm.Seal(nonce, nonce, contents, nil)
+		encrypted := gcm.Seal(nonce, nonce, contents, nil)
 
 		absSecretsFile, err := filepath.Abs(location)
 		if err != nil {

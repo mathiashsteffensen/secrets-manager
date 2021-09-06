@@ -29,4 +29,3 @@ const (
     secrets-manager edit -s ./config/credentials.yml.enc -k ./config/secrets.key
 `
 )
-
