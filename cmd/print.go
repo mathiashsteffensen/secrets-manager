@@ -26,14 +26,9 @@ import (
 var (
 	// printCmd represents the loadEnv command
 	printCmd = &cobra.Command{
-		Use: "print",
-		Long: `
-  Prints all config values formatted as json
-
-  Example usage:
-
-  secrets-manager load ./config/master.key -s ./config/secrets.yml.enc`,
-		Run: runPrintCmd,
+		Use:  "print",
+		Long: printDescription,
+		Run:  runPrintCmd,
 	}
 
 	envFiles []string

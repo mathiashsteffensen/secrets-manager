@@ -19,14 +19,9 @@ package crypto
 import (
 	"crypto/aes"
 	"crypto/cipher"
-	"crypto/rand"
 	"encoding/binary"
-	"fmt"
 	"github.com/lucsky/cuid"
-	"io"
-	"io/ioutil"
 	mathRand "math/rand"
-	"path/filepath"
 )
 
 func init() {
@@ -34,7 +29,7 @@ func init() {
 	mathRand.Seed(int64(seed))
 }
 
-func DecryptSecrets(secrets []byte, key []byte) (decrypted []byte, err error) {
+func Decrypt(secrets []byte, key []byte) (decrypted []byte, err error) {
 	gcm, err := NewGCM(key)
 	if err != nil {
 		return nil, err
@@ -49,6 +44,23 @@ func DecryptSecrets(secrets []byte, key []byte) (decrypted []byte, err error) {
 	return decrypted, nil
 }
 
+// Encrypt is a function that takes a byte slice of contents to encrypt
+func Encrypt(contents []byte, key []byte) (encryptedContents []byte, err error) {
+	gcm, err := NewGCM(key)
+	if err != nil {
+		return
+	}
+
+	nonce, err := GenRandomBytes(gcm.NonceSize())
+	if err != nil {
+		return
+	}
+
+	encryptedContents = gcm.Seal(nonce, nonce, contents, nil)
+
+	return
+}
+
 func NewGCM(key []byte) (gcm cipher.AEAD, err error) {
 	block, err := aes.NewCipher(key)
 	if err != nil {
@@ -61,39 +73,6 @@ func NewGCM(key []byte) (gcm cipher.AEAD, err error) {
 	}
 
 	return
-}
-
-type Encryptor func([]byte, string) error
-
-func NewEncryptor(key []byte) Encryptor {
-	return func(contents []byte, location string) (err error) {
-		gcm, err := NewGCM(key)
-		if err != nil {
-			return
-		}
-
-		nonce := make([]byte, gcm.NonceSize())
-		_, err = io.ReadFull(rand.Reader, nonce)
-		if err != nil {
-			return
-		}
-
-		encrypted := gcm.Seal(nonce, nonce, contents, nil)
-
-		absSecretsFile, err := filepath.Abs(location)
-		if err != nil {
-			return
-		}
-
-		err = ioutil.WriteFile(absSecretsFile, encrypted, 0777)
-		if err != nil {
-			return
-		}
-
-		fmt.Printf("Saved encrypted secrets to %s\n", absSecretsFile)
-
-		return
-	}
 }
 
 func GenRandomBytes(byteLength int) (randomBytes []byte, err error) {

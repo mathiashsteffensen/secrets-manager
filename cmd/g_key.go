@@ -29,14 +29,8 @@ import (
 var gKeyCmd = &cobra.Command{
 	Use:   "g:key",
 	Short: "Generate a new master key file",
-	Long: `
-Generates a new master encryption key, by default is 32 bytes to use AES-256 encryption.
-The key is saved to ./config/master.key by default
-
-To generate a 24 byte encryption key:
-
-secrets-manager g:key 24`,
-	Run: runGKeyCmd,
+	Long:  gkeyDescription,
+	Run:   runGKeyCmd,
 }
 
 func init() {

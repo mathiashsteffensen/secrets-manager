@@ -52,24 +52,29 @@ func init() {
 func runEditCmd(cmd *cobra.Command, args []string) {
 	key := readKeyFile()
 
-	secrets := readEncryptedSecrets()
+	secrets := readEncryptedSecretsFile()
 
 	if secrets != nil {
-		decryptedSecrets, err := crypto.DecryptSecrets(secrets, key)
+		decryptedSecrets, err := crypto.Decrypt(secrets, key)
 		cobra.CheckErr(err)
 		secrets = decryptedSecrets
 	}
 
 	dir, err := ioutil.TempDir(".", "tmp")
-	if err != nil {
-		log.Fatal(err)
-	}
+	cobra.CheckErr(err)
 
 	defer os.RemoveAll(dir) // clean up
 
 	tmpFile := createTempFile(secrets, dir)
 
-	openTempFile(tmpFile, crypto.NewEncryptor(key))
+	plainTextContent := openTempFile(tmpFile)
+
+	encryptedContent, err := crypto.Encrypt(plainTextContent, key)
+	cobra.CheckErr(err)
+
+	location := saveEncryptedSecretsFile(encryptedContent)
+
+	fmt.Printf("Saved encrypted secrets to %s\n", location)
 }
 
 func readKeyFile() []byte {
@@ -93,7 +98,7 @@ func readKeyFile() []byte {
 	return key
 }
 
-func readEncryptedSecrets() []byte {
+func readEncryptedSecretsFile() []byte {
 	absSecretsFile, err := filepath.Abs(secretsFile)
 	cobra.CheckErr(err)
 
@@ -110,6 +115,16 @@ func readEncryptedSecrets() []byte {
 	return secrets
 }
 
+func saveEncryptedSecretsFile(content []byte) (location string) {
+	location, err := filepath.Abs(secretsFile)
+	cobra.CheckErr(err)
+
+	err = ioutil.WriteFile(location, content, 0777)
+	cobra.CheckErr(err)
+
+	return
+}
+
 func createTempFile(content []byte, dir string) string {
 	tmp := filepath.Join(dir, "secrets.edit.yml")
 
@@ -120,7 +135,7 @@ func createTempFile(content []byte, dir string) string {
 	return tmp
 }
 
-func openTempFile(location string, handleSaveFile crypto.Encryptor) {
+func openTempFile(location string) []byte {
 	editor := env("EDITOR", "subl -w")
 	editorSlice := strings.Split(editor, " ")
 
@@ -135,6 +150,5 @@ func openTempFile(location string, handleSaveFile crypto.Encryptor) {
 	content, err := ioutil.ReadFile(location)
 	cobra.CheckErr(err)
 
-	err = handleSaveFile(content, secretsFile)
-	cobra.CheckErr(err)
+	return content
 }

@@ -28,4 +28,17 @@ const (
   Usage with custom config and key file:
     secrets-manager edit -s ./config/credentials.yml.enc -k ./config/secrets.key
 `
+	gkeyDescription = `
+  Generates a new master encryption key, by default is 32 bytes to use AES-256 encryption.
+  The key is saved to ./config/master.key by default
+	
+  To generate a 24 byte encryption key:
+    secrets-manager g:key 24
+`
+	printDescription = `
+  Prints all config values formatted as json
+
+  Example usage:
+    secrets-manager load ./config/master.key -s ./config/secrets.yml.enc
+`
 )

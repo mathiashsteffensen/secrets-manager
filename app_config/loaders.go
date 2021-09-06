@@ -42,7 +42,7 @@ func LoadEncrypted(secretsLocation string, keyLocation string) (err error) {
 		return
 	}
 
-	decrypted, err := crypto.DecryptSecrets(secrets, key)
+	decrypted, err := crypto.Decrypt(secrets, key)
 	if err != nil {
 		return
 	}
