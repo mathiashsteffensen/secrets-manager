@@ -18,9 +18,9 @@ package cmd
 
 import (
 	"fmt"
+	"github.com/mathiashsteffensen/secrets-manager/crypto"
 	"github.com/spf13/cobra"
 	"io/ioutil"
-	"math/rand"
 	"path/filepath"
 	"strconv"
 )
@@ -69,7 +69,7 @@ func runGKeyCmd(cmd *cobra.Command, args []string)  {
 
 	cobra.CheckErr(err)
 
-	randomBytes, err := genRandomBytes(intByteLength)
+	randomBytes, err := crypto.GenRandomBytes(intByteLength)
 
 	cobra.CheckErr(err)
 
@@ -79,12 +79,4 @@ func runGKeyCmd(cmd *cobra.Command, args []string)  {
 
 	fmt.Println("  Created new key file at:", keyFile)
 	fmt.Println("  If using git for version control remember to add this file to your .gitignore")
-}
-
-func genRandomBytes(byteLength int) (randomBytes []byte, err error) {
-	randomBytes = make([]byte, byteLength)
-
-	_, err = rand.Read(randomBytes)
-
-	return
 }

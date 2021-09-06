@@ -96,7 +96,7 @@ func NewEncryptor(key []byte) Encryptor {
 func GenRandomBytes(byteLength int) (randomBytes []byte, err error) {
 	randomBytes = make([]byte, byteLength)
 
-	_, err = rand.Read(randomBytes)
+	_, err = mathRand.Read(randomBytes)
 
 	return
 }
