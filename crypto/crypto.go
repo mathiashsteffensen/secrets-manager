@@ -31,6 +31,8 @@ func init() {
 	mathRand.Seed(int64(seed))
 }
 
+// Decrypt is a function that takes a byte slice of contents to decrypt and a key to use for the decryption
+// it returns the decrypted result and any eventual error
 func Decrypt(secrets []byte, key []byte) (decrypted []byte, err error) {
 	gcm, err := NewGCM(key)
 	if err != nil {
