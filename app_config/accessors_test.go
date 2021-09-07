@@ -21,9 +21,10 @@ import (
 	"testing"
 )
 
-var _ = LoadEncrypted("../config/secrets.yml.enc", "../config/master.key")
-
 func TestGet(t *testing.T) {
+	err := LoadEncrypted("../config/secrets.yml.enc", "../config/master.key")
+	assert.Nil(t, err)
+
 	got, err := Get("secret")
 	assert.Nil(t, err)
 	assert.Equal(t, "hello", got)
@@ -37,6 +38,9 @@ func TestGet(t *testing.T) {
 }
 
 func TestGetOrDefault(t *testing.T) {
+	err := LoadEncrypted("../config/secrets.yml.enc", "../config/master.key")
+	assert.Nil(t, err)
+
 	got := GetOrDefault("secret", "default")
 	assert.Equal(t, "hello", got)
 
@@ -48,6 +52,9 @@ func TestGetOrDefault(t *testing.T) {
 }
 
 func TestMustGet(t *testing.T) {
+	err := LoadEncrypted("../config/secrets.yml.enc", "../config/master.key")
+	assert.Nil(t, err)
+
 	got := MustGet("secret")
 	assert.Equal(t, "hello", got)
 
@@ -63,6 +70,9 @@ func TestMustGet(t *testing.T) {
 }
 
 func TestGetConfig(t *testing.T) {
+	err := LoadEncrypted("../config/secrets.yml.enc", "../config/master.key")
+	assert.Nil(t, err)
+
 	expectedConfig := Config{
 		"secret": "hello",
 		"super": Config{
@@ -78,6 +88,9 @@ func TestGetConfig(t *testing.T) {
 }
 
 func TestExists(t *testing.T) {
+	err := LoadEncrypted("../config/secrets.yml.enc", "../config/master.key")
+	assert.Nil(t, err)
+
 	got := Exists("secret")
 	assert.Equal(t, true, got)
 
@@ -86,6 +99,9 @@ func TestExists(t *testing.T) {
 }
 
 func TestAllKeys(t *testing.T) {
+	err := LoadEncrypted("../config/secrets.yml.enc", "../config/master.key")
+	assert.Nil(t, err)
+
 	for _, s := range AllKeys() {
 		assert.Equal(t, true, Exists(s))
 	}

@@ -16,92 +16,49 @@ limitations under the License.
 
 package AppConfig
 
-import "testing"
+import (
+	"github.com/stretchr/testify/assert"
+	"testing"
+)
 
 func TestLoadYaml(t *testing.T) {
 	target := map[string]interface{}{}
 
 	err := loadYaml([]byte("a: b\nb: \n  c: d"), &target)
-
-	if err != nil {
-		t.Errorf("Unexpected error when loading YAML %#v", err)
-	}
-
-	if target["a"] != "b" {
-		t.Errorf(`Expected target["a"] to equal "b" but got %#v`, target["a"])
-	}
+	assert.Nil(t, err)
+	assert.Equal(t, "b", target["a"])
 
 	nested, ok := target["b"].(map[string]interface{})
-
-	if !ok {
-		t.Errorf(`Expected target["b"] to be of type map[string]interface{}`)
-	}
-
-	if nested["c"] != "d" {
-		t.Errorf(`Expected target["b"] to equal "c" but got %#v`, target["b"])
-	}
+	assert.Equal(t, true, ok)
+	assert.Equal(t, "d", nested["c"])
 }
 
 func TestLoadEncrypted(t *testing.T) {
 	err := LoadEncrypted("../config/secrets.yml.enc", "../config/master.key")
-
-	if err != nil {
-		t.Errorf("Unexpected error when loading encrypted secrets %#v", err)
-	}
+	assert.Nil(t, err)
 
 	devConfig := config["development"].(map[string]interface{})
-
-	if devConfig["secret"] != "hello" {
-		t.Errorf(`Expected devConfig["secret"] to equal "hello" but got %#v`, devConfig["secret"])
-	}
+	assert.Equal(t, "hello", devConfig["secret"])
 }
 
 func TestLoad(t *testing.T) {
 	err := LoadEncrypted("../config/secrets.yml.enc", "../config/master.key")
-
-	if err != nil {
-		t.Errorf("Unexpected error when loading encrypted secrets %#v", err)
-	}
+	assert.Nil(t, err)
 
 	devConfig := config["development"].(map[string]interface{})
-
-	if devConfig["secret"] != "hello" {
-		t.Errorf(`Expected devConfig["secret"] to equal "hello" but got %#v`, devConfig["secret"])
-	}
-
-	prodConfig := config["production"].(map[string]interface{})
-
-	if prodConfig["secret"] != "world" {
-		t.Errorf(`Expected prodConfig["secret"] to equal "world" but got %#v`, prodConfig["secret"])
-	}
+	assert.Equal(t, "hello", devConfig["secret"])
 
 	err = Load("../config/env.yml")
-
-	if err != nil {
-		t.Errorf("Unexpected error when loading yaml file %#v", err)
-	}
+	assert.Nil(t, err)
 
 	devConfig = config["development"].(map[string]interface{})
-
-	if devConfig["key"] != "value" {
-		t.Errorf(`Expected devConfig["key"] to equal "value" but got %#v`, devConfig["key"])
-	}
-
-	if devConfig["secret"] != "hello" {
-		t.Errorf(`Expected devConfig["secret"] to equal "hello" but got #%v`, devConfig["secret"])
-	}
-
-	if prodConfig["secret"] != "world" {
-		t.Errorf(`Expected prodConfig["secret"] to equal "world" but got %#v`, prodConfig["secret"])
-	}
+	assert.Equal(t, "value", devConfig["key"])
+	assert.Equal(t, "hello", devConfig["secret"])
 }
 
 func TestLoadFile(t *testing.T) {
 	contents, err := loadFile("../config/env.yml")
-
-	if err != nil {
-		t.Errorf("Unexpected error when loading file %#v", err)
-	}
+	assert.Nil(t, err)
 
 	expectedContents := `production:
   key: other-value
@@ -109,7 +66,5 @@ func TestLoadFile(t *testing.T) {
 development:
   key: value`
 
-	if string(contents) != expectedContents {
-		t.Errorf("Expected file contents to be %s but got %s", expectedContents, string(contents))
-	}
+	assert.Equal(t, string(contents), expectedContents)
 }
