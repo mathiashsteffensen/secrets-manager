@@ -33,7 +33,7 @@ const VERSION = "${newVersion}"`
 
     console.info("--- Pushing new version to Github")
 
-    await $`git tag v${newVersion} && git push origin v${newVersion}`
+    await $`git add ./config/version.go && git commit -m "bump version to ${newVersion}" && git tag v${newVersion} && git push origin v${newVersion}`
 
     console.info(`--- Version ${newVersion} successfully published`)
 } catch (p) {
