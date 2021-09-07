@@ -31,6 +31,50 @@ func TestGet(t *testing.T) {
 	got, err = Get("super.deeply.nested")
 	assert.Nil(t, err)
 	assert.Equal(t, got, "value")
+
+	_, err = Get("this.is.not.a.real.key")
+	assert.Error(t, err)
+}
+
+func TestGetOrDefault(t *testing.T) {
+	got := GetOrDefault("secret", "default")
+	assert.Equal(t, "hello", got)
+
+	got = GetOrDefault("super.deeply.nested", "default")
+	assert.Equal(t, got, "value")
+
+	got = GetOrDefault("this.is.not.a.real.key", "default")
+	assert.Equal(t, got, "default")
+}
+
+func TestMustGet(t *testing.T) {
+	got := MustGet("secret")
+	assert.Equal(t, "hello", got)
+
+	got = MustGet("super.deeply.nested")
+	assert.Equal(t, got, "value")
+
+	defer func() {
+		r := recover()
+
+		assert.NotNil(t, r)
+	}()
+	_ = MustGet("this.is.not.a.real.key")
+}
+
+func TestGetConfig(t *testing.T) {
+	expectedConfig := Config{
+		"secret": "hello",
+		"super": Config{
+			"deeply": Config{
+				"nested": "value",
+			},
+		},
+	}
+
+	actualConfig := GetConfig()
+
+	assert.Equal(t, expectedConfig, actualConfig)
 }
 
 func TestExists(t *testing.T) {
