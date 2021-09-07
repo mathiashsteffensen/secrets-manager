@@ -45,7 +45,7 @@ namespace :version do
     def newVersionFile(version)
         puts "--- Creating version.go file for version #{version}"
 
-        newContents = "package config\n\nconst VERSION = \"#{version}\""
+        newContents = "package config\n\nconst VERSION = \\\"#{version}\\\""
 
          sh "echo \"#{newContents}\" >> config/version.go"
     end
@@ -57,12 +57,7 @@ namespace :version do
 
     def publishVersion(version)
         puts "--- Pushing new version to Github"
-        sh "
-            git add ./config/version.go
-            && git commit -m \"bump version to #{version}\"
-            && git tag v#{version}
-            && git push origin v#{version}
-        "
+        sh "git add ./config/version.go && git commit -m \"bump version to #{version}\" && git tag v#{version} && git push origin v#{version}"
         puts "--- Version #{version} successfully published"
     end
 end
