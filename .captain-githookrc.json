@@ -1,5 +1,5 @@
 {
   "hooks": {
-    "pre-commit": "go test ./... && gofmt -l -s -w ./ && staticcheck ./..."
+    "pre-commit": "rake"
   }
 }
