@@ -14,6 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+// Package crypto provides helpers for encrypting and decrypting byte slices using a pseudo-random seed base on CUIDs
 package crypto
 
 import (
@@ -25,6 +26,7 @@ import (
 )
 
 func init() {
+	// Seed with pseudo random CUID
 	seed := binary.BigEndian.Uint64([]byte(cuid.New()))
 	mathRand.Seed(int64(seed))
 }
@@ -44,7 +46,8 @@ func Decrypt(secrets []byte, key []byte) (decrypted []byte, err error) {
 	return decrypted, nil
 }
 
-// Encrypt is a function that takes a byte slice of contents to encrypt
+// Encrypt is a function that takes a byte slice of contents to encrypt and a key to use for the encryption
+// it returns the encrypted result and any eventual error
 func Encrypt(contents []byte, key []byte) (encryptedContents []byte, err error) {
 	gcm, err := NewGCM(key)
 	if err != nil {
@@ -61,6 +64,8 @@ func Encrypt(contents []byte, key []byte) (encryptedContents []byte, err error) 
 	return
 }
 
+// NewGCM Takes an encryption/decryption key and returns a new GCM based un an underlying AES block cipher
+// The GCM is used to perform cryptographic operations, it is what performs the actual encryption and decryption of our data
 func NewGCM(key []byte) (gcm cipher.AEAD, err error) {
 	block, err := aes.NewCipher(key)
 	if err != nil {
@@ -75,8 +80,9 @@ func NewGCM(key []byte) (gcm cipher.AEAD, err error) {
 	return
 }
 
-func GenRandomBytes(byteLength int) (randomBytes []byte, err error) {
-	randomBytes = make([]byte, byteLength)
+// GenRandomBytes generates a byte slice filled with a specified number of pseudo random bytes
+func GenRandomBytes(sliceLength int) (randomBytes []byte, err error) {
+	randomBytes = make([]byte, sliceLength)
 
 	_, err = mathRand.Read(randomBytes)
 
