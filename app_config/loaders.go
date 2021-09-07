@@ -24,6 +24,7 @@ import (
 	"path/filepath"
 )
 
+// Config is an alias for map[string]interface{}
 type Config = map[string]interface{}
 
 var (

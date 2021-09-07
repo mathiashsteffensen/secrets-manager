@@ -21,6 +21,7 @@ import (
 	"strings"
 )
 
+// Get a specified key from your configuration
 func Get(keys string) (value interface{}, err error) {
 	keysSlice := make([]string, 1, len(keys)+1)
 	keysSlice[0] = ENV
@@ -45,6 +46,7 @@ func Get(keys string) (value interface{}, err error) {
 	return
 }
 
+// GetOrDefault calls Get and if any errors occur it returns the provided default value instead
 func GetOrDefault(keys string, defaultValue interface{}) interface{} {
 	value, err := Get(keys)
 	if err != nil {
@@ -53,6 +55,7 @@ func GetOrDefault(keys string, defaultValue interface{}) interface{} {
 	return value
 }
 
+// MustGet calls Get and panics if any errors occur
 func MustGet(keys string) (value interface{}) {
 	value, err := Get(keys)
 	if err != nil {
@@ -61,19 +64,23 @@ func MustGet(keys string) (value interface{}) {
 	return
 }
 
+// Exists returns true if a specified key exists and false otherwise
 func Exists(keys string) bool {
 	_, err := Get(keys)
 	return err == nil
 }
 
+// GetConfig returns the entire Config map for the current environment
 func GetConfig() Config {
 	return config[ENV].(Config)
 }
 
+// AllKeys returns a slice of all the keys which exists in the current environments Config map
 func AllKeys() []string {
 	return keysInConfig(config[ENV].(Config), "")
 }
 
+// keysInConfig recursively fetches all keys in a Config map
 func keysInConfig(c Config, prefix string) []string {
 	keys := make([]string, 0)
 	for key, value := range c {
