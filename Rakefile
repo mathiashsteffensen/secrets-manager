@@ -38,8 +38,6 @@ namespace :version do
             publishVersion(newVersion)
         end
     end
-    
-
 
 
     def newVersionFile(version)

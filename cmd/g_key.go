@@ -25,7 +25,7 @@ import (
 	"strconv"
 )
 
-// g:keyCmd represents the g:key command
+// gKeyCmd represents the g:key command
 var gKeyCmd = &cobra.Command{
 	Use:   "g:key",
 	Short: "Generate a new master key file",

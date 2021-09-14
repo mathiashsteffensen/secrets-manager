@@ -17,10 +17,8 @@ limitations under the License.
 package cmd
 
 import (
-	"fmt"
 	"github.com/mathiashsteffensen/secrets-manager/crypto"
 	"io/ioutil"
-	"log"
 	"os"
 	"os/exec"
 	"path/filepath"
@@ -74,7 +72,7 @@ func runEditCmd(cmd *cobra.Command, args []string) {
 
 	location := saveEncryptedSecretsFile(encryptedContent)
 
-	fmt.Printf("Saved encrypted secrets to %s\n", location)
+	logger.Printf("Saved encrypted secrets to %s\n", location)
 }
 
 func readKeyFile() []byte {
@@ -85,8 +83,8 @@ func readKeyFile() []byte {
 
 	if err != nil {
 		if strings.Contains(err.Error(), "no such file or directory") {
-			fmt.Printf("\n  No key file exists in the specified location %s\n\n", absKeyFile)
-			fmt.Println("  To create new key file run: secrets-manager g:key")
+			logger.Printf("\nNo key file exists in the specified location %s\n\n", absKeyFile)
+			logger.Println("To create new key file run: secrets-manager g:key")
 			cobra.CheckErr(err)
 		} else {
 			cobra.CheckErr(err)
@@ -129,7 +127,7 @@ func createTempFile(content []byte, dir string) string {
 	tmp := filepath.Join(dir, "secrets.edit.yml")
 
 	if err := ioutil.WriteFile(tmp, content, 0666); err != nil {
-		log.Fatal(err)
+		logger.Fatal(err)
 	}
 
 	return tmp
