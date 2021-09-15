@@ -72,6 +72,8 @@ Installation:
 go get github.com/mathiashsteffensen/secrets-manager/app_config
 ```
 
+Documentation: https://pkg.go.dev/github.com/mathiashsteffensen/secrets-manager/app_config
+
 Usage:
 
 ```go
