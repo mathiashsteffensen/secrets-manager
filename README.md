@@ -2,6 +2,8 @@
 
 [![Go Report Card](https://goreportcard.com/badge/github.com/mathiashsteffensen/secrets-manager)](https://goreportcard.com/report/github.com/mathiashsteffensen/secrets-manager)
 
+#### !IMPORTANT: The API is not stable, this project is still in development and shouldn't be used in production until its v1.0.0 release
+
 This command line and associated Go API is meant to make managing secrets in your applications easier.
 
 It provides a CLI tool for editing and encrypting a secrets.yml.enc file (or whatever file name you want to configure, more on that later). As well as a Go API for accessing this file in your application. The Go API also provides options to load other unencrypted yaml files to make all configuration accessible from one place.
