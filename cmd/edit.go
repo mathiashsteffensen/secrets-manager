@@ -137,7 +137,9 @@ func openTempFile(location string) []byte {
 	editor := env("EDITOR", "subl -w")
 	editorSlice := strings.Split(editor, " ")
 
-	cmd := exec.Command(editorSlice[0], editorSlice[1], location)
+	commandSlice := append(editorSlice, location)
+
+	cmd := exec.Command(commandSlice[0], commandSlice[1:]...)
 
 	err := cmd.Start()
 	cobra.CheckErr(err)

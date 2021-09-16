@@ -42,12 +42,14 @@ func init() {
 	printCmd.Flags().StringSliceVarP(&envFiles, "env-files", "f", []string{"./config/env.yml"}, "Unencrypted environment yml files to load")
 }
 
-func runPrintCmd(cmd *cobra.Command, args []string) {
+func runPrintCmd(_ *cobra.Command, _ []string) {
 	err := AppConfig.LoadEncrypted(secretsFile, keyFile)
 	cobra.CheckErr(err)
 
-	err = AppConfig.Load("./config/env.yml")
-	cobra.CheckErr(err)
+	for _, file := range envFiles {
+		err = AppConfig.Load(file)
+		cobra.CheckErr(err)
+	}
 
 	jsonBytes, err := json.MarshalIndent(AppConfig.GetConfig(), "", "    ")
 	cobra.CheckErr(err)
