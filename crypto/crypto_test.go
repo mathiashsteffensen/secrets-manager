@@ -66,15 +66,15 @@ func TestEncrypt(t *testing.T) {
 func TestGenRandomBytes(t *testing.T) {
 	byteLength := 32
 
-	last, err := GenRandomBytes(byteLength)
+	original, err := GenRandomBytes(byteLength)
 	assert.Nil(t, err)
 
-	assert.Equal(t, len(last), byteLength)
+	assert.Equal(t, byteLength, len(original))
 
 	for i := 0; i < 200_000; i++ {
 		current, err := GenRandomBytes(byteLength)
 		assert.Nil(t, err)
-		assert.NotEqualf(t, string(last), string(current), "GenRandomBytes should not return the same thing again in a 200_000 iteration loop, failed on %s", strconv.Itoa(i))
+		assert.NotEqualf(t, string(original), string(current), "GenRandomBytes should not return the same thing again in a 200_000 iteration loop, failed on %s", strconv.Itoa(i))
 	}
 }
 
