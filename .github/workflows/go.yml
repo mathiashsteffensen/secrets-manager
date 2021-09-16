@@ -20,7 +20,7 @@ jobs:
     - name: Format 
       run: gofmt -l -s -w ./
     - name: Lint
-      run: staticcheck ./...
+      run:  go install honnef.co/go/tools/cmd/staticcheck@latest && staticcheck ./...
     - name: Test
       run: go test ./... --cover
     
