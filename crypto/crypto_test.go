@@ -23,7 +23,7 @@ import (
 )
 
 func TestDecrypt(t *testing.T) {
-	key, err := GenRandomBytes(16)
+	key, err := GenRandomBytesBase64(16)
 	assert.Nil(t, err)
 
 	plainContents := []byte("plain text contents")
@@ -36,7 +36,7 @@ func TestDecrypt(t *testing.T) {
 	assert.Nil(t, err)
 	assert.Equal(t, plainContents, decryptedContents)
 
-	otherKey, err := GenRandomBytes(16)
+	otherKey, err := GenRandomBytesBase64(16)
 	assert.Nil(t, err)
 
 	// Test that it can't decrypt with another key
@@ -46,7 +46,7 @@ func TestDecrypt(t *testing.T) {
 }
 
 func TestEncrypt(t *testing.T) {
-	key, err := GenRandomBytes(16)
+	key, err := GenRandomBytesBase64(16)
 	assert.Nil(t, err)
 
 	plainContents := []byte("plain text contents")
@@ -66,21 +66,36 @@ func TestEncrypt(t *testing.T) {
 func TestGenRandomBytes(t *testing.T) {
 	byteLength := 32
 
-	last, err := GenRandomBytes(byteLength)
+	original, err := GenRandomBytes(byteLength)
 	assert.Nil(t, err)
 
-	assert.Equal(t, len(last), byteLength)
+	assert.Equal(t, byteLength, len(original))
 
 	for i := 0; i < 200_000; i++ {
 		current, err := GenRandomBytes(byteLength)
 		assert.Nil(t, err)
-		assert.NotEqualf(t, string(last), string(current), "GenRandomBytes should not return the same thing again in a 200_000 iteration loop, failed on %s", strconv.Itoa(i))
+		assert.NotEqualf(t, string(original), string(current), "GenRandomBytes should not return the same thing again in a 200_000 iteration loop, failed on %s", strconv.Itoa(i))
+	}
+}
+
+func TestGenRandomBytesBase64(t *testing.T) {
+	byteLength := 32
+
+	original, err := GenRandomBytesBase64(byteLength)
+	assert.Nil(t, err)
+
+	assert.Equal(t, byteLength, len(original))
+
+	for i := 0; i < 200_000; i++ {
+		current, err := GenRandomBytesBase64(byteLength)
+		assert.Nil(t, err)
+		assert.NotEqualf(t, string(original), string(current), "GenRandomBytes should not return the same thing again in a 200_000 iteration loop, failed on %s", strconv.Itoa(i))
 	}
 }
 
 // Benchmarks
 func BenchmarkEncrypt(b *testing.B) {
-	key, _ := GenRandomBytes(16)
+	key, _ := GenRandomBytesBase64(16)
 
 	plainText := []byte("plain text contents")
 	for i := 0; i < b.N; i++ {
