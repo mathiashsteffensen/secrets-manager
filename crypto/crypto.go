@@ -103,4 +103,3 @@ func GenRandomBytesBase64(sliceLength int) (randomBytes []byte, err error) {
 
 	return
 }
-
