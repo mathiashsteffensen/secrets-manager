@@ -63,7 +63,7 @@ func runGKeyCmd(cmd *cobra.Command, args []string) {
 
 	cobra.CheckErr(err)
 
-	randomBytes, err := crypto.GenRandomBytes(intByteLength)
+	randomBytes, err := crypto.GenRandomBytesBase64(intByteLength)
 
 	cobra.CheckErr(err)
 

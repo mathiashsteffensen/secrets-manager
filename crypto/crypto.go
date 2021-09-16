@@ -20,6 +20,7 @@ package crypto
 import (
 	"crypto/aes"
 	"crypto/cipher"
+	"encoding/base64"
 	"encoding/binary"
 	"github.com/lucsky/cuid"
 	mathRand "math/rand"
@@ -56,7 +57,7 @@ func Encrypt(contents []byte, key []byte) (encryptedContents []byte, err error) 
 		return
 	}
 
-	nonce, err := GenRandomBytes(gcm.NonceSize())
+	nonce, err := GenRandomBytesBase64(gcm.NonceSize())
 	if err != nil {
 		return
 	}
@@ -90,3 +91,16 @@ func GenRandomBytes(sliceLength int) (randomBytes []byte, err error) {
 
 	return
 }
+
+// GenRandomBytesBase64 generates a byte slice filled with a specified number of pseudo random bytes - base64 encoded
+func GenRandomBytesBase64(sliceLength int) (randomBytes []byte, err error) {
+	randomBytes, err = GenRandomBytes(sliceLength)
+	if err != nil {
+		return
+	}
+
+	randomBytes = []byte(base64.StdEncoding.EncodeToString(randomBytes))[:sliceLength]
+
+	return
+}
+
