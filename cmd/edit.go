@@ -17,7 +17,9 @@ limitations under the License.
 package cmd
 
 import (
+	"encoding/base64"
 	"github.com/mathiashsteffensen/secrets-manager/crypto"
+	FileHelpers "github.com/mathiashsteffensen/secrets-manager/file_helpers"
 	"io/ioutil"
 	"os"
 	"os/exec"
@@ -50,13 +52,8 @@ func init() {
 func runEditCmd(cmd *cobra.Command, args []string) {
 	key := readKeyFile()
 
-	secrets := readEncryptedSecretsFile()
-
-	if secrets != nil {
-		decryptedSecrets, err := crypto.Decrypt(secrets, key)
-		cobra.CheckErr(err)
-		secrets = decryptedSecrets
-	}
+	secrets, err := FileHelpers.ReadEncryptedSecretsFile(secretsFile, key)
+	cobra.CheckErr(err)
 
 	dir, err := ioutil.TempDir(".", "tmp")
 	cobra.CheckErr(err)
@@ -70,7 +67,7 @@ func runEditCmd(cmd *cobra.Command, args []string) {
 	encryptedContent, err := crypto.Encrypt(plainTextContent, key)
 	cobra.CheckErr(err)
 
-	location := saveEncryptedSecretsFile(encryptedContent)
+	location := saveEncryptedSecretsFile([]byte(base64.StdEncoding.EncodeToString(encryptedContent)))
 
 	logger.Printf("Saved encrypted secrets to %s\n", location)
 }
@@ -94,23 +91,6 @@ func readKeyFile() []byte {
 	}
 
 	return key
-}
-
-func readEncryptedSecretsFile() []byte {
-	absSecretsFile, err := filepath.Abs(secretsFile)
-	cobra.CheckErr(err)
-
-	secrets, err := ioutil.ReadFile(absSecretsFile)
-
-	if err != nil {
-		if strings.Contains(err.Error(), "no such file or directory") {
-			return nil
-		} else {
-			cobra.CheckErr(err)
-		}
-	}
-
-	return secrets
 }
 
 func saveEncryptedSecretsFile(content []byte) (location string) {

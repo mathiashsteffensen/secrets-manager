@@ -19,7 +19,7 @@ package AppConfig
 import (
 	"github.com/ghodss/yaml"
 	"github.com/ieee0824/go-deepmerge"
-	"github.com/mathiashsteffensen/secrets-manager/crypto"
+	FileHelpers "github.com/mathiashsteffensen/secrets-manager/file_helpers"
 	"io/ioutil"
 	"path/filepath"
 )
@@ -33,17 +33,12 @@ var (
 )
 
 func LoadEncrypted(secretsLocation string, keyLocation string) (err error) {
-	secrets, err := loadFile(secretsLocation)
-	if err != nil {
-		return
-	}
-
 	key, err := loadFile(keyLocation)
 	if err != nil {
 		return
 	}
 
-	decrypted, err := crypto.Decrypt(secrets, key)
+	decrypted, err := FileHelpers.ReadEncryptedSecretsFile(secretsLocation, key)
 	if err != nil {
 		return
 	}
