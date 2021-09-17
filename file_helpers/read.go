@@ -8,12 +8,7 @@ import (
 )
 
 func ReadEncryptedSecretsFile(fileLocation string, key []byte) (decrypted []byte, err error) {
-	absSecretsFile, err := filepath.Abs(fileLocation)
-	if err != nil {
-		return
-	}
-
-	secrets, err := ioutil.ReadFile(absSecretsFile)
+	secrets, err := LoadFile(fileLocation)
 	if err != nil {
 		return
 	}
@@ -25,5 +20,15 @@ func ReadEncryptedSecretsFile(fileLocation string, key []byte) (decrypted []byte
 
 	decrypted, err = crypto.Decrypt(decoded, key)
 
+	return
+}
+
+func LoadFile(relativePath string) (contents []byte, err error) {
+	absolutePath, err := filepath.Abs(relativePath)
+	if err != nil {
+		return
+	}
+
+	contents, err = ioutil.ReadFile(absolutePath)
 	return
 }
