@@ -21,6 +21,8 @@ const (
   CLI tool for editing and encrypting secrets files.
 
   Checkout https://github.com/mathiashsteffensen/secrets-manager for detailed instructions
+
+  If you run into any unexpected issues please report them at https://github.com/mathiashsteffensen/secrets-manager/issues
 `
 	editDescription = `
   Edit your applications secrets file, by default looks in ./config/secrets.yml.enc from the directory where it's called
