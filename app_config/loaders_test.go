@@ -21,18 +21,6 @@ import (
 	"testing"
 )
 
-func TestLoadYaml(t *testing.T) {
-	target := map[string]interface{}{}
-
-	err := loadYaml([]byte("a: b\nb: \n  c: d"), &target)
-	assert.Nil(t, err)
-	assert.Equal(t, "b", target["a"])
-
-	nested, ok := target["b"].(map[string]interface{})
-	assert.Equal(t, true, ok)
-	assert.Equal(t, "d", nested["c"])
-}
-
 func TestLoadEncrypted(t *testing.T) {
 	err := LoadEncrypted("../config/secrets.yml.enc", "../config/master.key")
 	assert.Nil(t, err)
@@ -54,17 +42,4 @@ func TestLoad(t *testing.T) {
 	devConfig = config["development"].(map[string]interface{})
 	assert.Equal(t, "value", devConfig["key"])
 	assert.Equal(t, "hello", devConfig["secret"])
-}
-
-func TestLoadFile(t *testing.T) {
-	contents, err := loadFile("../config/env.yml")
-	assert.Nil(t, err)
-
-	expectedContents := `production:
-  key: other-value
-  secret: hello
-development:
-  key: value`
-
-	assert.Equal(t, string(contents), expectedContents)
 }

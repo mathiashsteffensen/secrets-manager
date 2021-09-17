@@ -20,8 +20,6 @@ import (
 	"github.com/ghodss/yaml"
 	"github.com/ieee0824/go-deepmerge"
 	FileHelpers "github.com/mathiashsteffensen/secrets-manager/file_helpers"
-	"io/ioutil"
-	"path/filepath"
 )
 
 // Config is an alias for map[string]interface{}
@@ -33,7 +31,7 @@ var (
 )
 
 func LoadEncrypted(secretsLocation string, keyLocation string) (err error) {
-	key, err := loadFile(keyLocation)
+	key, err := FileHelpers.LoadFile(keyLocation)
 	if err != nil {
 		return
 	}
@@ -48,9 +46,9 @@ func LoadEncrypted(secretsLocation string, keyLocation string) (err error) {
 	return
 }
 
-func Load(files ...string) (err error) {
+func Load(files ...string) error {
 	for _, file := range files {
-		yamlBytes, err := loadFile(file)
+		yamlBytes, err := FileHelpers.LoadFile(file)
 		if err != nil {
 			return err
 		}
@@ -60,27 +58,13 @@ func Load(files ...string) (err error) {
 			return err
 		}
 	}
-	return
-}
-
-func loadYaml(yamlBytes []byte, target *Config) (err error) {
-	return yaml.Unmarshal(yamlBytes, target)
-}
-
-func loadFile(relativePath string) (contents []byte, err error) {
-	absolutePath, err := filepath.Abs(relativePath)
-	if err != nil {
-		return
-	}
-
-	contents, err = ioutil.ReadFile(absolutePath)
-	return
+	return nil
 }
 
 func mergeConfig(bytes []byte) (err error) {
 	newConfig := Config{}
 
-	err = loadYaml(bytes, &newConfig)
+	err = yaml.Unmarshal(bytes, &newConfig)
 
 	if err != nil {
 		return

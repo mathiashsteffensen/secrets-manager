@@ -38,7 +38,7 @@ func Get(keys string) (value interface{}, err error) {
 		}
 
 		if !ok {
-			err = fmt.Errorf("key not found, key: %s", keys)
+			err = fmt.Errorf("AppConfig: key not found in loaded configuration, key: %s", keys)
 			return
 		}
 	}

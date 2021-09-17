@@ -17,3 +17,16 @@ func TestReadEncryptedSecretsFile(t *testing.T) {
 
 	assert.Equal(t, expectedContents, contents)
 }
+
+func TestLoadFile(t *testing.T) {
+	contents, err := LoadFile("../config/env.yml")
+	assert.Nil(t, err)
+
+	expectedContents := `production:
+  key: other-value
+  secret: hello
+development:
+  key: value`
+
+	assert.Equal(t, string(contents), expectedContents)
+}
