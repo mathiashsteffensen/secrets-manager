@@ -20,6 +20,15 @@ func TestRunEditCmd(t *testing.T) {
 	}()
 
 	runEditCmd(&cobraCmd, args)
+
+	secretsFile = "../config/config.yml.enc"
+
+	runEditCmd(&cobraCmd, args)
+
+	err = os.Remove(secretsFile)
+	assert.Nil(t, err)
+
+	secretsFile = "../config/secrets.yml.enc"
 }
 
 func TestReadKeyFile(t *testing.T) {

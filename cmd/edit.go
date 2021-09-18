@@ -53,7 +53,12 @@ func runEditCmd(cmd *cobra.Command, args []string) {
 	key := readKeyFile()
 
 	secrets, err := FileHelpers.ReadEncryptedSecretsFile(secretsFile, key)
-	cobra.CheckErr(err)
+
+	if err != nil && strings.Contains(err.Error(), "no such file") {
+		secrets = make([]byte, 0)
+	} else {
+		cobra.CheckErr(err)
+	}
 
 	dir, err := ioutil.TempDir(".", "tmp")
 	cobra.CheckErr(err)
