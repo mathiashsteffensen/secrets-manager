@@ -18,6 +18,7 @@ package AppConfig
 
 import (
 	"github.com/stretchr/testify/assert"
+	"os"
 	"testing"
 )
 
@@ -27,6 +28,26 @@ func TestLoadEncrypted(t *testing.T) {
 
 	devConfig := config["development"].(map[string]interface{})
 	assert.Equal(t, "hello", devConfig["secret"])
+
+	err = os.Setenv("GO_ENV", "production")
+	assert.Nil(t, err)
+
+	err = LoadEncrypted("../config/secrets.yml.enc", "../config/master.key")
+	assert.ErrorIs(t, err, ErrNoGoMasterKey)
+
+	err = os.Setenv("GO_MASTER_KEY", "mvemS1oqdY3fUWNE/DVpkWlyKhWyMw+H")
+	assert.Nil(t, err)
+
+	config = Config{}
+
+	err = LoadEncrypted("../config/secrets.yml.enc", "../config/master.key")
+	assert.Nil(t, err)
+
+	devConfig = config["development"].(map[string]interface{})
+	assert.Equal(t, "hello", devConfig["secret"])
+
+	err = os.Setenv("GO_ENV", "development")
+	assert.Nil(t, err)
 }
 
 func TestLoad(t *testing.T) {

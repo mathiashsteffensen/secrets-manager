@@ -17,6 +17,7 @@ limitations under the License.
 package AppConfig
 
 import (
+	"errors"
 	"github.com/ghodss/yaml"
 	"github.com/ieee0824/go-deepmerge"
 	FileHelpers "github.com/mathiashsteffensen/secrets-manager/file_helpers"
@@ -26,14 +27,25 @@ import (
 type Config = map[string]interface{}
 
 var (
-	config = Config{}
-	ENV    = env("GO_ENV", "development")
+	config           = Config{}
+	ENV              = env("GO_ENV", "development")
+	ErrNoGoMasterKey = errors.New("GO_ENV is set to production but no GO_MASTER_KEY is set, not loading encrypted secrets file")
 )
 
 func LoadEncrypted(secretsLocation string, keyLocation string) (err error) {
-	key, err := FileHelpers.LoadFile(keyLocation)
-	if err != nil {
-		return
+	var key []byte
+
+	if env("GO_ENV", "development") == "production" {
+		keyString := env("GO_MASTER_KEY", "")
+		if keyString == "" {
+			return ErrNoGoMasterKey
+		}
+		key = []byte(keyString)
+	} else {
+		key, err = FileHelpers.LoadFile(keyLocation)
+		if err != nil {
+			return
+		}
 	}
 
 	decrypted, err := FileHelpers.ReadEncryptedSecretsFile(secretsLocation, key)
