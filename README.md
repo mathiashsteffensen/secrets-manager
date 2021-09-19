@@ -1,5 +1,6 @@
 # Go Secrets Manager
 
+[![CircleCI](https://circleci.com/gh/mathiashsteffensen/secrets-manager/tree/master.svg?style=shield)](https://circleci.com/gh/mathiashsteffensen/secrets-manager/tree/master)
 [![Go Report Card](https://goreportcard.com/badge/github.com/mathiashsteffensen/secrets-manager)](https://goreportcard.com/report/github.com/mathiashsteffensen/secrets-manager)
 
 #### !IMPORTANT: The API is not stable, this project is still in development and shouldn't be used in production until its v1.0.0 release
@@ -18,7 +19,6 @@ Main features:
   * Check if keys exist before attempting to fetch their values for easy error handling
   * Alternatively just call AppConfig.MustGet("key") and let it panic
   * Fetch deeply nested keys with simple dot notation AppConfig.MustGet("some_api.read_permission.token")
-  * By default
 
 ## The CLI Tool
 
