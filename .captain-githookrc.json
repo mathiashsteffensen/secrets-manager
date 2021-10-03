@@ -1,5 +1,5 @@
 {
   "hooks": {
-    "pre-commit": "rake"
+    "pre-commit": "make"
   }
 }

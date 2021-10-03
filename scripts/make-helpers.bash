@@ -59,11 +59,11 @@ publish_new_version() {
 
   print "Pushing new version to Github"
 
-  git checkout master
-  git add ./config/version.go
-  git commit -m "bump version to v$NEW_VERSION"
-  git tag v$NEW_VERSION
-  git push origin v$NEW_VERSION
+  git checkout master && \
+  git add ./config/version.go && \
+  git commit -m "bump version to v$NEW_VERSION" && \
+  git tag v$NEW_VERSION && \
+  git push origin v$NEW_VERSION && \
   git push
 
   print "Version $NEW_VERSION successfully published"
