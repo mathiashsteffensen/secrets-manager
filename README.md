@@ -27,6 +27,14 @@ Installation:
 go install github.com/mathiashsteffensen/secrets-manager@latest
 ```
 
+Building latest from source:
+```bash
+git clone git@github.com:mathiashsteffensen/secrets-manager.git
+cd secrets-manager
+make install
+make build # Binary is located in ./dist/secrets-manager
+```
+
 Usage:
 ```bash
 secrets-manager # Print available commands

@@ -57,7 +57,7 @@ func TestEncrypt(t *testing.T) {
 	// Test that we can encrypt stuff
 	assert.NotEqual(t, plainContents, encryptedContents)
 
-	// Test that encrypted contents aren't the same with the same key (side effect of GCM block cipher)
+	// Test that encrypted contents aren't the same with the same key
 	contentsEncryptedAgain, err := Encrypt(plainContents, key)
 	assert.Nil(t, err)
 	assert.NotEqual(t, encryptedContents, contentsEncryptedAgain)
