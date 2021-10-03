@@ -29,11 +29,6 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var (
-	secretsFile string
-	keyFile     string
-)
-
 // editCmd represents the edit command
 var editCmd = &cobra.Command{
 	Use:   "edit",
@@ -44,9 +39,6 @@ var editCmd = &cobra.Command{
 
 func init() {
 	rootCmd.AddCommand(editCmd)
-
-	editCmd.Flags().StringVarP(&secretsFile, "secrets-file", "s", "./config/secrets.yml.enc", "Secrets file to decrypt, edit and encrypt")
-	editCmd.Flags().StringVarP(&keyFile, "key-file", "k", "./config/master.key", "Encryption key file location")
 }
 
 func runEditCmd(cmd *cobra.Command, args []string) {

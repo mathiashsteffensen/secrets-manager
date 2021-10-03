@@ -28,6 +28,16 @@ var rootCmd = &cobra.Command{
 	Long:  rootDescription,
 }
 
+var (
+	secretsFile string
+	keyFile     string
+)
+
+func init() {
+	rootCmd.PersistentFlags().StringVarP(&secretsFile, "secrets-file", "s", "./config/secrets.yml.enc", "Secrets file to decrypt, edit and encrypt")
+	rootCmd.PersistentFlags().StringVarP(&keyFile, "key-file", "k", "./config/master.key", "Encryption key file location")
+}
+
 // Execute adds all child commands to the root command and sets flags appropriately.
 // This is called by main.main(). It only needs to happen once to the rootCmd.
 func Execute() {
