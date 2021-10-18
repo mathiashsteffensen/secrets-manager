@@ -27,7 +27,7 @@ import (
 var getCmd = &cobra.Command{
 	Use:   "get",
 	Short: "Get a key from your configuration and print it to stdout",
-	Run: runGetCmd,
+	Run:   runGetCmd,
 }
 
 func init() {
@@ -42,11 +42,13 @@ func runGetCmd(_ *cobra.Command, args []string) {
 		return
 	}
 
-	err := AppConfig.LoadEncrypted(secretsFile, keyFile)
-	cobra.CheckErr(err)
+	if secretsFile != "" && keyFile != "" {
+		err := AppConfig.LoadEncrypted(secretsFile, keyFile)
+		cobra.CheckErr(err)
+	}
 
 	for _, file := range envFiles {
-		err = AppConfig.Load(file)
+		err := AppConfig.Load(file)
 		cobra.CheckErr(err)
 	}
 
