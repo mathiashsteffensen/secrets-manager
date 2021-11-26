@@ -5,6 +5,8 @@
 
 #### !IMPORTANT: The API is not stable, this project is still in development and shouldn't be used in production until its v1.0.0 release
 
+#### !IMPORTANT: I am not a cryptography expert, just a programmer who likes experimenting. Most of the hardcore cryptography is handled by the Go standard library, for details on how things are encrypted see the crypto package.
+
 This command line and associated Go API is meant to make managing secrets in your applications easier.
 
 It provides a CLI tool for editing and encrypting a secrets.yml.enc file (or whatever file name you want to configure, more on that later). As well as a Go API for accessing this file in your application. The Go API also provides options to load other unencrypted yaml files to make all configuration accessible from one place.
@@ -14,7 +16,7 @@ Files are encrypted using AES (https://en.wikipedia.org/wiki/Advanced_Encryption
 Main features:
 * CLI tools for editing and managing encrypted secrets
 * AppConfig
-  * Load AES encrypted files independent of the CLI tool, just provide an encrypted secrets file location and a key file location
+  * Load encrypted YAML files
   * Merge encrypted secrets with other YAML config files
   * Check if keys exist before attempting to fetch their values for easy error handling
   * Alternatively just call AppConfig.MustGet("key") and let it panic
@@ -27,13 +29,14 @@ Installation:
 go install github.com/mathiashsteffensen/secrets-manager@latest
 ```
 
-Building latest from source:
+Building latest from source (requires just git, make* & Go):
 ```bash
 git clone git@github.com:mathiashsteffensen/secrets-manager.git
 cd secrets-manager
 make install
 make build # Binary is located in ./dist/secrets-manager
 ```
+(* It doesn't really 'require' make, alternatively run 'go mod download && go build -o dist/secrets-manager')
 
 Usage:
 ```bash
