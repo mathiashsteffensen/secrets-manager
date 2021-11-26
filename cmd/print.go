@@ -36,7 +36,7 @@ var (
 
 func init() {
 	rootCmd.AddCommand(printCmd)
-	printCmd.Flags().StringSliceVarP(&envFiles, "env-files", "f", []string{"./config/env.yml"}, "Unencrypted environment yml files to load")
+	printCmd.Flags().StringSliceVarP(&envFiles, "env-files", "f", []string{}, "Unencrypted environment yml files to load")
 }
 
 func runPrintCmd(_ *cobra.Command, _ []string) {

@@ -33,7 +33,7 @@ var getCmd = &cobra.Command{
 func init() {
 	rootCmd.AddCommand(getCmd)
 
-	getCmd.Flags().StringSliceVarP(&envFiles, "env-files", "f", []string{"./config/env.yml"}, "Unencrypted environment yml files to load")
+	getCmd.Flags().StringSliceVarP(&envFiles, "env-files", "f", []string{}, "Unencrypted environment yml files to load")
 }
 
 func runGetCmd(_ *cobra.Command, args []string) {
