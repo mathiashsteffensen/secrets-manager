@@ -23,11 +23,14 @@ set_new_version() {
       NEW_VERSION[2]=$(expr ${CURRENT_VERSION[2]} + 1)
       ;;
     minor)
+      NEW_VERSION[2]=0
       # shellcheck disable=SC2003
       # shellcheck disable=SC2086
       NEW_VERSION[1]=$(expr ${CURRENT_VERSION[1]} + 1)
       ;;
     major)
+      NEW_VERSION[2]=0
+      NEW_VERSION[1]=0
       # shellcheck disable=SC2003
       # shellcheck disable=SC2086
       NEW_VERSION[0]=$(expr ${CURRENT_VERSION[0]} + 1)
