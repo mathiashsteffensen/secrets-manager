@@ -22,24 +22,37 @@ import (
 )
 
 // Get a specified key from your configuration
-func Get(keys string) (value interface{}, err error) {
+func Get[TReturns any](keys string) (value TReturns, err error) {
 	keysSlice := make([]string, 1, len(keys)+1)
 	keysSlice[0] = ENV
 	keysSlice = append(keysSlice, strings.Split(keys, ".")...)
 
 	nestedConfig := config
 
+	var untypedValue any
+
 	for i, key := range keysSlice {
+		isLastKey := i == len(keysSlice)-1
+
 		var ok bool
-		if i != len(keysSlice)-1 {
+		if !isLastKey {
 			nestedConfig, ok = nestedConfig[key].(Config)
 		} else {
-			value, ok = nestedConfig[key]
+			untypedValue, ok = nestedConfig[key]
 		}
 
 		if !ok {
 			err = fmt.Errorf("AppConfig: key not found in loaded configuration, key: %s", keys)
 			return
+		}
+
+		if isLastKey {
+			value, ok = untypedValue.(TReturns)
+
+			if !ok {
+				err = fmt.Errorf("AppConfig: type assertion failed for key: %s", keys)
+				return
+			}
 		}
 	}
 
@@ -47,8 +60,8 @@ func Get(keys string) (value interface{}, err error) {
 }
 
 // GetOrDefault calls Get and if any errors occur it returns the provided default value instead
-func GetOrDefault(keys string, defaultValue interface{}) interface{} {
-	value, err := Get(keys)
+func GetOrDefault[TReturns any](keys string, defaultValue TReturns) TReturns {
+	value, err := Get[TReturns](keys)
 	if err != nil {
 		return defaultValue
 	}
@@ -56,8 +69,8 @@ func GetOrDefault(keys string, defaultValue interface{}) interface{} {
 }
 
 // MustGet calls Get and panics if any errors occur
-func MustGet(keys string) (value interface{}) {
-	value, err := Get(keys)
+func MustGet[TReturns any](keys string) (value TReturns) {
+	value, err := Get[TReturns](keys)
 	if err != nil {
 		panic(err)
 	}
@@ -66,7 +79,7 @@ func MustGet(keys string) (value interface{}) {
 
 // Exists returns true if a specified key exists and false otherwise
 func Exists(keys string) bool {
-	_, err := Get(keys)
+	_, err := Get[any](keys)
 	return err == nil
 }
 

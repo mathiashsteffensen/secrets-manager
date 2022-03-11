@@ -52,7 +52,7 @@ func runGetCmd(_ *cobra.Command, args []string) {
 		cobra.CheckErr(err)
 	}
 
-	value := AppConfig.MustGet(args[0])
+	value := AppConfig.MustGet[any](args[0])
 
 	fmt.Print(value)
 }

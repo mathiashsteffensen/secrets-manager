@@ -25,15 +25,15 @@ func TestGet(t *testing.T) {
 	err := LoadEncrypted("../config/secrets.yml.enc", "../config/master.key")
 	assert.Nil(t, err)
 
-	got, err := Get("secret")
+	got, err := Get[string]("secret")
 	assert.Nil(t, err)
 	assert.Equal(t, "hello", got)
 
-	got, err = Get("super.deeply.nested")
+	got, err = Get[string]("super.deeply.nested")
 	assert.Nil(t, err)
 	assert.Equal(t, got, "value")
 
-	_, err = Get("this.is.not.a.real.key")
+	_, err = Get[any]("this.is.not.a.real.key")
 	assert.Error(t, err)
 }
 
@@ -41,13 +41,13 @@ func TestGetOrDefault(t *testing.T) {
 	err := LoadEncrypted("../config/secrets.yml.enc", "../config/master.key")
 	assert.Nil(t, err)
 
-	got := GetOrDefault("secret", "default")
+	got := GetOrDefault[string]("secret", "default")
 	assert.Equal(t, "hello", got)
 
-	got = GetOrDefault("super.deeply.nested", "default")
+	got = GetOrDefault[string]("super.deeply.nested", "default")
 	assert.Equal(t, got, "value")
 
-	got = GetOrDefault("this.is.not.a.real.key", "default")
+	got = GetOrDefault[string]("this.is.not.a.real.key", "default")
 	assert.Equal(t, got, "default")
 }
 
@@ -55,10 +55,10 @@ func TestMustGet(t *testing.T) {
 	err := LoadEncrypted("../config/secrets.yml.enc", "../config/master.key")
 	assert.Nil(t, err)
 
-	got := MustGet("secret")
+	got := MustGet[string]("secret")
 	assert.Equal(t, "hello", got)
 
-	got = MustGet("super.deeply.nested")
+	got = MustGet[string]("super.deeply.nested")
 	assert.Equal(t, got, "value")
 
 	defer func() {
@@ -66,7 +66,7 @@ func TestMustGet(t *testing.T) {
 
 		assert.NotNil(t, r)
 	}()
-	_ = MustGet("this.is.not.a.real.key")
+	_ = MustGet[any]("this.is.not.a.real.key")
 }
 
 func TestGetConfig(t *testing.T) {
