@@ -3,8 +3,6 @@
 [![CircleCI](https://circleci.com/gh/mathiashsteffensen/secrets-manager/tree/master.svg?style=shield)](https://circleci.com/gh/mathiashsteffensen/secrets-manager/tree/master)
 [![Go Report Card](https://goreportcard.com/badge/github.com/mathiashsteffensen/secrets-manager)](https://goreportcard.com/report/github.com/mathiashsteffensen/secrets-manager)
 
-#### !IMPORTANT: The API is not stable, this project is still in development and shouldn't be used in production until its v1.0.0 release
-
 #### !IMPORTANT: I am not a cryptography expert, just a programmer who likes experimenting. Most of the hardcore cryptography is handled by the Go standard library, for details on how things are encrypted see the crypto package.
 
 This command line and associated Go API is meant to make managing secrets in your applications easier.
@@ -84,6 +82,8 @@ go get github.com/mathiashsteffensen/secrets-manager/app_config
 ```
 
 Documentation: https://pkg.go.dev/github.com/mathiashsteffensen/secrets-manager/app_config
+
+This project follows semantic versioning and you can expect the public API to be frozen as long as you lock the major version. Read more about semantic versioning [here](https://semver.org/).
 
 Usage:
 
