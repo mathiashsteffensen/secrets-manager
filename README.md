@@ -1,6 +1,5 @@
 # Go Secrets Manager
 
-[![CircleCI](https://circleci.com/gh/mathiashsteffensen/secrets-manager/tree/master.svg?style=shield)](https://circleci.com/gh/mathiashsteffensen/secrets-manager/tree/master)
 [![Go Report Card](https://goreportcard.com/badge/github.com/mathiashsteffensen/secrets-manager)](https://goreportcard.com/report/github.com/mathiashsteffensen/secrets-manager)
 
 #### !IMPORTANT: I am not a cryptography expert, just a programmer who likes experimenting. Most of the hardcore cryptography is handled by the Go standard library, for details on how things are encrypted see the crypto package.
