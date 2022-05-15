@@ -43,8 +43,7 @@ func runGetCmd(_ *cobra.Command, args []string) {
 	}
 
 	if secretsFile != "" && keyFile != "" {
-		err := AppConfig.LoadEncrypted(secretsFile, keyFile)
-		cobra.CheckErr(err)
+		_ = AppConfig.LoadEncrypted(secretsFile, keyFile)
 	}
 
 	for _, file := range envFiles {
