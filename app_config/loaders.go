@@ -67,10 +67,6 @@ func LoadEncrypted(secretsLocation string, keyLocation string) (err error) {
 	return
 }
 
-func LoadEncryptedFS() {
-
-}
-
 func Load(files ...string) error {
 	for _, file := range files {
 		yamlBytes, err := loadFile(file)
@@ -95,7 +91,7 @@ func getKey(keyLocation string) ([]byte, error) {
 		if env("GO_ENV", "development") == "production" {
 			return key, ErrNoGoMasterKey
 		}
-		return FileHelpers.LoadFile(keyLocation)
+		return loadFile(keyLocation)
 	} else {
 		return []byte(keyString), nil
 	}
