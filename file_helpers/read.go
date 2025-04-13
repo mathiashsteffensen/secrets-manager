@@ -1,18 +1,14 @@
 package FileHelpers
 
 import (
+	"embed"
 	"encoding/base64"
 	"github.com/mathiashsteffensen/secrets-manager/crypto"
-	"io/ioutil"
+	"os"
 	"path/filepath"
 )
 
-func ReadEncryptedSecretsFile(fileLocation string, key []byte) (decrypted []byte, err error) {
-	secrets, err := LoadFile(fileLocation)
-	if err != nil {
-		return
-	}
-
+func Decrypt(secrets []byte, key []byte) (decrypted []byte, err error) {
 	decoded, err := base64.StdEncoding.DecodeString(string(secrets))
 	if err != nil {
 		return
@@ -29,6 +25,10 @@ func LoadFile(relativePath string) (contents []byte, err error) {
 		return
 	}
 
-	contents, err = ioutil.ReadFile(absolutePath)
+	contents, err = os.ReadFile(absolutePath)
 	return
+}
+
+func LoadFileFS(fs *embed.FS, path string) (contents []byte, err error) {
+	return fs.ReadFile(path)
 }

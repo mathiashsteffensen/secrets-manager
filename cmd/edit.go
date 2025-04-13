@@ -20,7 +20,6 @@ import (
 	"encoding/base64"
 	"github.com/mathiashsteffensen/secrets-manager/crypto"
 	FileHelpers "github.com/mathiashsteffensen/secrets-manager/file_helpers"
-	"io/ioutil"
 	"os"
 	"os/exec"
 	"path/filepath"
@@ -44,7 +43,10 @@ func init() {
 func runEditCmd(cmd *cobra.Command, args []string) {
 	key := readKeyFile()
 
-	secrets, err := FileHelpers.ReadEncryptedSecretsFile(secretsFile, key)
+	encryptedSecrets, err := FileHelpers.LoadFile(secretsFile)
+	cobra.CheckErr(err)
+
+	secrets, err := FileHelpers.Decrypt(encryptedSecrets, key)
 
 	if err != nil && strings.Contains(err.Error(), "no such file") {
 		secrets = make([]byte, 0)
@@ -52,7 +54,7 @@ func runEditCmd(cmd *cobra.Command, args []string) {
 		cobra.CheckErr(err)
 	}
 
-	dir, err := ioutil.TempDir(".", "tmp")
+	dir, err := os.MkdirTemp(".", "tmp")
 	cobra.CheckErr(err)
 
 	defer os.RemoveAll(dir) // clean up
@@ -73,7 +75,7 @@ func readKeyFile() []byte {
 	absKeyFile, err := filepath.Abs(keyFile)
 	cobra.CheckErr(err)
 
-	key, err := ioutil.ReadFile(absKeyFile)
+	key, err := os.ReadFile(absKeyFile)
 
 	if err != nil {
 		if strings.Contains(err.Error(), "no such file or directory") {
@@ -94,7 +96,7 @@ func saveEncryptedSecretsFile(content []byte) (location string) {
 	location, err := filepath.Abs(secretsFile)
 	cobra.CheckErr(err)
 
-	err = ioutil.WriteFile(location, content, 0777)
+	err = os.WriteFile(location, content, 0777)
 	cobra.CheckErr(err)
 
 	return
@@ -103,7 +105,7 @@ func saveEncryptedSecretsFile(content []byte) (location string) {
 func createTempFile(content []byte, dir string) string {
 	tmp := filepath.Join(dir, "secrets.edit.yml")
 
-	if err := ioutil.WriteFile(tmp, content, 0666); err != nil {
+	if err := os.WriteFile(tmp, content, 0666); err != nil {
 		logger.Fatal(err)
 	}
 
@@ -124,7 +126,7 @@ func openTempFile(location string) []byte {
 	err = cmd.Wait()
 	cobra.CheckErr(err)
 
-	content, err := ioutil.ReadFile(location)
+	content, err := os.ReadFile(location)
 	cobra.CheckErr(err)
 
 	return content

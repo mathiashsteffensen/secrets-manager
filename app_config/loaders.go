@@ -17,38 +17,47 @@ limitations under the License.
 package AppConfig
 
 import (
+	"embed"
 	"errors"
 	"github.com/ghodss/yaml"
 	"github.com/ieee0824/go-deepmerge"
 	FileHelpers "github.com/mathiashsteffensen/secrets-manager/file_helpers"
 )
 
-// Config is an alias for map[string]interface{}
-type Config = map[string]interface{}
+type Config = map[string]any
 
 var (
 	config           = Config{}
 	ENV              = env("GO_ENV", "development")
 	ErrNoGoMasterKey = errors.New("GO_ENV is set to production but no GO_MASTER_KEY is set, not loading encrypted secrets file")
+
+	fs *embed.FS
 )
 
-func LoadEncrypted(secretsLocation string, keyLocation string) (err error) {
-	var key []byte
+func SetFS(newFs *embed.FS) {
+	fs = newFs
+}
 
-	if env("GO_ENV", "development") == "production" {
-		keyString := env("GO_MASTER_KEY", "")
-		if keyString == "" {
-			return ErrNoGoMasterKey
-		}
-		key = []byte(keyString)
+func loadFile(path string) ([]byte, error) {
+	if fs == nil {
+		return FileHelpers.LoadFile(path)
 	} else {
-		key, err = FileHelpers.LoadFile(keyLocation)
-		if err != nil {
-			return
-		}
+		return FileHelpers.LoadFileFS(fs, path)
+	}
+}
+
+func LoadEncrypted(secretsLocation string, keyLocation string) (err error) {
+	key, err := getKey(keyLocation)
+	if err != nil {
+		return
 	}
 
-	decrypted, err := FileHelpers.ReadEncryptedSecretsFile(secretsLocation, key)
+	secrets, err := loadFile(secretsLocation)
+	if err != nil {
+		return
+	}
+
+	decrypted, err := FileHelpers.Decrypt(secrets, key)
 	if err != nil {
 		return
 	}
@@ -58,9 +67,13 @@ func LoadEncrypted(secretsLocation string, keyLocation string) (err error) {
 	return
 }
 
+func LoadEncryptedFS() {
+
+}
+
 func Load(files ...string) error {
 	for _, file := range files {
-		yamlBytes, err := FileHelpers.LoadFile(file)
+		yamlBytes, err := loadFile(file)
 		if err != nil {
 			return err
 		}
@@ -71,6 +84,21 @@ func Load(files ...string) error {
 		}
 	}
 	return nil
+}
+
+func getKey(keyLocation string) ([]byte, error) {
+	var key []byte
+
+	keyString := env("GO_MASTER_KEY", "")
+
+	if keyString == "" {
+		if env("GO_ENV", "development") == "production" {
+			return key, ErrNoGoMasterKey
+		}
+		return FileHelpers.LoadFile(keyLocation)
+	} else {
+		return []byte(keyString), nil
+	}
 }
 
 func mergeConfig(bytes []byte) (err error) {
