@@ -18,12 +18,14 @@ package cmd
 
 import (
 	"encoding/base64"
-	"github.com/mathiashsteffensen/secrets-manager/crypto"
-	FileHelpers "github.com/mathiashsteffensen/secrets-manager/file_helpers"
+	"errors"
 	"os"
 	"os/exec"
 	"path/filepath"
 	"strings"
+
+	"github.com/mathiashsteffensen/secrets-manager/crypto"
+	FileHelpers "github.com/mathiashsteffensen/secrets-manager/file_helpers"
 
 	"github.com/spf13/cobra"
 )
@@ -43,18 +45,17 @@ func init() {
 func runEditCmd(cmd *cobra.Command, args []string) {
 	key := readKeyFile()
 
+	secrets := make([]byte, 0)
+
 	encryptedSecrets, err := FileHelpers.LoadFile(secretsFile)
-	cobra.CheckErr(err)
+	if !errors.Is(err, os.ErrNotExist) {
+		cobra.CheckErr(err)
 
-	secrets, err := FileHelpers.Decrypt(encryptedSecrets, key)
-
-	if err != nil && strings.Contains(err.Error(), "no such file") {
-		secrets = make([]byte, 0)
-	} else {
+		secrets, err = FileHelpers.Decrypt(encryptedSecrets, key)
 		cobra.CheckErr(err)
 	}
 
-	dir, err := os.MkdirTemp(".", "tmp")
+	dir, err := os.MkdirTemp("/tmp", "tmp")
 	cobra.CheckErr(err)
 
 	defer os.RemoveAll(dir) // clean up
