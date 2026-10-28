@@ -14,14 +14,21 @@ jobs:
   format-lint-test:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v7
 
     - name: Set up Go
-      uses: actions/setup-go@v2
+      uses: actions/setup-go@v7
       with:
         go-version: 1.27.3
-    - name: Format 
-      run: gofmt -l -s -w ./
+    - name: Format
+      run: |
+        unformatted=$(gofmt -l -s .)
+        if [ -n "$unformatted" ]; then
+          echo "Run 'make fmt' to format these files:"
+          echo "$unformatted"
+          gofmt -d -s .
+          exit 1
+        fi
     - name: Lint
       run:  go install honnef.co/go/tools/cmd/staticcheck@latest && staticcheck ./...
     - name: Test
