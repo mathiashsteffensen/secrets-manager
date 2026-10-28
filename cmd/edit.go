@@ -55,7 +55,7 @@ func runEditCmd(cmd *cobra.Command, args []string) {
 		cobra.CheckErr(err)
 	}
 
-	dir, err := os.MkdirTemp("/tmp", "tmp")
+	dir, err := os.MkdirTemp(os.TempDir(), "secrets-manager-")
 	cobra.CheckErr(err)
 
 	defer os.RemoveAll(dir) // clean up
@@ -115,16 +115,18 @@ func createTempFile(content []byte, dir string) string {
 
 func openTempFile(location string) []byte {
 	editor := env("EDITOR", "subl -w")
-	editorSlice := strings.Split(editor, " ")
 
-	commandSlice := append(editorSlice, location)
+	// Like git, let the shell parse EDITOR so it may hold arguments and quoted paths.
+	// The file is passed as a positional argument, so its path is never re-parsed.
+	cmd := exec.Command("sh", "-c", editor+` "$@"`, editor, location)
 
-	cmd := exec.Command(commandSlice[0], commandSlice[1:]...)
+	// Terminal editors such as vim or nano need the user's terminal,
+	// without it they read from and write to /dev/null.
+	cmd.Stdin = os.Stdin
+	cmd.Stdout = os.Stdout
+	cmd.Stderr = os.Stderr
 
-	err := cmd.Start()
-	cobra.CheckErr(err)
-
-	err = cmd.Wait()
+	err := cmd.Run()
 	cobra.CheckErr(err)
 
 	content, err := os.ReadFile(location)

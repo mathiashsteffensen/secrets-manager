@@ -16,10 +16,14 @@ limitations under the License.
 
 package cmd
 
-import "os"
+import (
+	"os"
+	"strings"
+)
 
+// env returns the variable's value, or defaultValue when it is unset or blank
 func env(variable string, defaultValue string) (value string) {
-	value = os.Getenv(variable)
+	value = strings.TrimSpace(os.Getenv(variable))
 
 	if value == "" {
 		return defaultValue
